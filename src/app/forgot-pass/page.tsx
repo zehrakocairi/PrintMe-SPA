@@ -38,7 +38,7 @@ const PageForgotPass = ({}) => {
             Sign in
           </Link>
           {` / `}
-          <Link href="/signup" className="text-green-600">
+          <Link href="/login" className="text-green-600">
             Sign up
           </Link>
         </span>

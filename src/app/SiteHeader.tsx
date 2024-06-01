@@ -11,7 +11,7 @@ const SiteHeader = () => {
 
   let pathname = usePathname();
 
-  return pathname === "/home-2" ? <Header /> : <HeaderLogged />;
+  return <HeaderLogged />;
 };
 
 export default SiteHeader;

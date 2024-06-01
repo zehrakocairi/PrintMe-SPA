@@ -1,37 +1,58 @@
 "use client";
 
-import React, { FC, useState } from "react";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import LikeButton from "@/components/LikeButton";
-import { StarIcon } from "@heroicons/react/24/solid";
-import BagIcon from "@/components/BagIcon";
-import NcInputNumber from "@/components/NcInputNumber";
-import { PRODUCTS } from "@/data/data";
+import React, { useState } from "react";
 import {
   NoSymbolIcon,
   ClockIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import IconDiscount from "@/components/IconDiscount";
-import Prices from "@/components/Prices";
-import toast from "react-hot-toast";
-import SectionSliderProductCard from "@/components/SectionSliderProductCard";
-import detail1JPG from "@/images/products/detail1.jpg";
-import detail2JPG from "@/images/products/detail2.jpg";
-import detail3JPG from "@/images/products/detail3.jpg";
-import Policy from "./Policy";
-import ReviewItem from "@/components/ReviewItem";
+import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import SectionPromo2 from "@/components/SectionPromo2";
-import ModalViewAllReviews from "./ModalViewAllReviews";
+import NcImage from "@/shared/NcImage/NcImage";
+import ReviewItem from "@/components/ReviewItem";
+import detail21JPG from "@/images/products/detail3-1.webp";
+import detail22JPG from "@/images/products/detail3-2.webp";
+import detail23JPG from "@/images/products/detail3-3.webp";
+import detail24JPG from "@/images/products/detail3-4.webp";
+import { PRODUCTS } from "@/data/data";
+import IconDiscount from "@/components/IconDiscount";
+import NcInputNumber from "@/components/NcInputNumber";
+import BagIcon from "@/components/BagIcon";
+import toast from "react-hot-toast";
+import { StarIcon } from "@heroicons/react/24/solid";
+import SectionSliderProductCard from "@/components/SectionSliderProductCard";
 import NotifyAddTocart from "@/components/NotifyAddTocart";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
+import LikeSaveBtns from "@/components/LikeSaveBtns";
 import AccordionInfo from "@/components/AccordionInfo";
+import Policy from "./Policy";
+import ModalViewAllReviews from "./ModalViewAllReviews";
+import ListingImageGallery from "@/components/listing-image-gallery/ListingImageGallery";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Route } from "next";
 
-const LIST_IMAGES_DEMO = [detail1JPG, detail2JPG, detail3JPG];
+const LIST_IMAGES_GALLERY_DEMO: (string | StaticImageData)[] = [
+  detail21JPG,
+  detail22JPG,
+  detail23JPG,
+  detail24JPG,
+  "https://images.pexels.com/photos/3812433/pexels-photo-3812433.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/1127000/pexels-photo-1127000.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/292999/pexels-photo-292999.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/1778412/pexels-photo-1778412.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/871494/pexels-photo-871494.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/2850487/pexels-photo-2850487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+];
+const PRICE = 108;
 
-const ProductDetailPage = () => {
+const ProductDetailPage2 = ({}) => {
   const { sizes, variants, status, allOfSizes, image } = PRODUCTS[0];
+  //
+  const router = useRouter();
+  const thisPathname = usePathname();
+  const searchParams = useSearchParams();
+  const modal = searchParams?.get("modal");
   //
   const [variantActive, setVariantActive] = useState(0);
   const [sizeSelected, setSizeSelected] = useState(sizes ? sizes[0] : "");
@@ -40,21 +61,16 @@ const ProductDetailPage = () => {
     useState(false);
 
   //
-  const notifyAddTocart = () => {
-    toast.custom(
-      (t) => (
-        <NotifyAddTocart
-          productImage={image}
-          qualitySelected={qualitySelected}
-          show={t.visible}
-          sizeSelected={sizeSelected}
-          variantActive={variantActive}
-        />
-      ),
-      { position: "top-right", id: "nc-product-notify", duration: 3000 }
-    );
+  const handleCloseModalImageGallery = () => {
+    let params = new URLSearchParams(document.location.search);
+    params.delete("modal");
+    router.push(`${thisPathname}/?${params.toString()}` as Route);
+  };
+  const handleOpenModalImageGallery = () => {
+    router.push(`${thisPathname}/?modal=PHOTO_TOUR_SCROLLABLE` as Route);
   };
 
+  //
   const renderVariants = () => {
     if (!variants || !variants.length) {
       return null;
@@ -82,7 +98,7 @@ const ProductDetailPage = () => {
               }`}
             >
               <div
-                className="absolute inset-0.5 rounded-full overflow-hidden z-0 object-cover bg-cover"
+                className="absolute inset-0.5 rounded-full overflow-hidden z-0 bg-cover"
                 style={{
                   backgroundImage: `url(${
                     // @ts-ignore
@@ -99,6 +115,21 @@ const ProductDetailPage = () => {
           ))}
         </div>
       </div>
+    );
+  };
+
+  const notifyAddTocart = () => {
+    toast.custom(
+      (t) => (
+        <NotifyAddTocart
+          productImage={image}
+          qualitySelected={qualitySelected}
+          show={t.visible}
+          sizeSelected={sizeSelected}
+          variantActive={variantActive}
+        />
+      ),
+      { position: "top-right", id: "nc-product-notify", duration: 3000 }
     );
   };
 
@@ -124,7 +155,7 @@ const ProductDetailPage = () => {
             See sizing chart
           </a>
         </div>
-        <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 mt-3">
+        <div className="grid grid-cols-4 gap-2 mt-3">
           {allOfSizes.map((size, index) => {
             const isActive = size === sizeSelected;
             const sizeOutStock = !sizes.includes(size);
@@ -162,7 +193,7 @@ const ProductDetailPage = () => {
       return null;
     }
     const CLASSES =
-      "absolute top-3 left-3 px-2.5 py-1.5 text-xs bg-white dark:bg-slate-900 nc-shadow-lg rounded-full flex items-center justify-center text-slate-700 text-slate-900 dark:text-slate-300";
+      "text-sm flex items-center text-slate-700 text-slate-900 dark:text-slate-300";
     if (status === "New in") {
       return (
         <div className={CLASSES}>
@@ -198,88 +229,134 @@ const ProductDetailPage = () => {
     return null;
   };
 
-  const renderSectionContent = () => {
+  const renderSectionSidebar = () => {
     return (
-      <div className="space-y-7 2xl:space-y-8">
-        {/* ---------- 1 HEADING ----------  */}
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-semibold">
-            Heavy Weight Shoes
-          </h2>
+      <div className="listingSectionSidebar__wrap lg:shadow-lg">
+        <div className="space-y-7 lg:space-y-8">
+          {/* PRICE */}
+          <div className="">
+            {/* ---------- 1 HEADING ----------  */}
+            <div className="flex items-center justify-between space-x-5">
+              <div className="flex text-2xl font-semibold">
+                ${PRICE.toFixed(2)}
+              </div>
 
-          <div className="flex items-center mt-5 space-x-4 sm:space-x-5">
-            {/* <div className="flex text-xl font-semibold">$112.00</div> */}
-            <Prices
-              contentClass="py-1 px-2 md:py-1.5 md:px-3 text-lg font-semibold"
-              price={112}
-            />
-
-            <div className="h-7 border-l border-slate-300 dark:border-slate-700"></div>
-
-            <div className="flex items-center">
               <a
                 href="#reviews"
                 className="flex items-center text-sm font-medium"
               >
-                <StarIcon className="w-5 h-5 pb-[1px] text-yellow-400" />
-                <div className="ml-1.5 flex">
-                  <span>4.9</span>
-                  <span className="block mx-2">·</span>
-                  <span className="text-slate-600 dark:text-slate-400 underline">
+                <div className="">
+                  <StarIcon className="w-5 h-5 pb-[1px] text-orange-400" />
+                </div>
+                <span className="ml-1.5 flex">
+                  <span>4.9 </span>
+                  <span className="mx-1.5">·</span>
+                  <span className="text-slate-700 dark:text-slate-400 underline">
                     142 reviews
                   </span>
-                </div>
+                </span>
               </a>
-              <span className="hidden sm:block mx-2.5">·</span>
-              <div className="hidden sm:flex items-center text-sm">
-                <SparklesIcon className="w-3.5 h-3.5" />
-                <span className="ml-1 leading-none">{status}</span>
-              </div>
+            </div>
+
+            {/* ---------- 3 VARIANTS AND SIZE LIST ----------  */}
+            <div className="mt-6 space-y-7 lg:space-y-8">
+              <div className="">{renderVariants()}</div>
+              <div className="">{renderSizeList()}</div>
             </div>
           </div>
-        </div>
-
-        {/* ---------- 3 VARIANTS AND SIZE LIST ----------  */}
-        <div className="">{renderVariants()}</div>
-        <div className="">{renderSizeList()}</div>
-
-        {/*  ---------- 4  QTY AND ADD TO CART BUTTON */}
-        <div className="flex space-x-3.5">
-          <div className="flex items-center justify-center bg-slate-100/70 dark:bg-slate-800/70 px-2 py-3 sm:p-3.5 rounded-full">
-            <NcInputNumber
-              defaultValue={qualitySelected}
-              onChange={setQualitySelected}
-            />
+          {/*  ---------- 4  QTY AND ADD TO CART BUTTON */}
+          <div className="flex space-x-3.5">
+            <div className="flex items-center justify-center bg-slate-100/70 dark:bg-slate-800/70 px-2 py-3 sm:p-3.5 rounded-full">
+              <NcInputNumber
+                defaultValue={qualitySelected}
+                onChange={setQualitySelected}
+              />
+            </div>
+            <ButtonPrimary
+              className="flex-1 flex-shrink-0"
+              onClick={notifyAddTocart}
+            >
+              <BagIcon className="hidden sm:inline-block w-5 h-5 mb-0.5" />
+              <span className="ml-3">Add to cart</span>
+            </ButtonPrimary>
           </div>
-          <ButtonPrimary
-            className="flex-1 flex-shrink-0"
-            onClick={notifyAddTocart}
-          >
-            <BagIcon className="hidden sm:inline-block w-5 h-5 mb-0.5" />
-            <span className="ml-3">Add to cart</span>
-          </ButtonPrimary>
-        </div>
 
-        {/*  */}
-        <hr className=" 2xl:!my-10 border-slate-200 dark:border-slate-700"></hr>
-        {/*  */}
+          {/* SUM */}
+          <div className="hidden sm:flex flex-col space-y-4 ">
+            <div className="space-y-2.5">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <span className="flex">
+                  <span>{`$${PRICE.toFixed(2)}  `}</span>
+                  <span className="mx-2">x</span>
+                  <span>{`${qualitySelected} `}</span>
+                </span>
 
-        {/* ---------- 5 ----------  */}
-        <AccordionInfo />
-
-        {/* ---------- 6 ----------  */}
-        <div className="hidden xl:block">
-          <Policy />
+                <span>{`$${(PRICE * qualitySelected).toFixed(2)}`}</span>
+              </div>
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <span>Tax estimate</span>
+                <span>$0</span>
+              </div>
+            </div>
+            <div className="border-b border-slate-200 dark:border-slate-700"></div>
+            <div className="flex justify-between font-semibold">
+              <span>Total</span>
+              <span>{`$${(PRICE * qualitySelected).toFixed(2)}`}</span>
+            </div>
+          </div>
         </div>
       </div>
     );
   };
 
-  const renderDetailSection = () => {
+  const renderSection1 = () => {
     return (
-      <div className="">
-        <h2 className="text-2xl font-semibold">Product Details</h2>
-        <div className="prose prose-sm sm:prose dark:prose-invert sm:max-w-4xl mt-7">
+      <div className="listingSection__wrap !space-y-6">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-semibold">
+            Heavy Weight Hoodie
+          </h2>
+          <div className="flex items-center mt-4 sm:mt-5">
+            <a
+              href="#reviews"
+              className="hidden sm:flex items-center text-sm font-medium "
+            >
+              <div className="">
+                <StarIcon className="w-5 h-5 pb-[1px] text-slate-800 dark:text-slate-200" />
+              </div>
+              <span className="ml-1.5">
+                <span>4.9</span>
+                <span className="mx-1.5">·</span>
+                <span className="text-slate-700 dark:text-slate-400 underline">
+                  142 reviews
+                </span>
+              </span>
+            </a>
+            <span className="hidden sm:block mx-2.5">·</span>
+            {renderStatus()}
+
+            <div className="ml-auto">
+              <LikeSaveBtns />
+            </div>
+          </div>
+        </div>
+        {/*  */}
+        <div className="block lg:hidden">{renderSectionSidebar()}</div>
+
+        {/*  */}
+        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+        {/*  */}
+        <AccordionInfo panelClassName="p-4 pt-3.5 text-slate-600 text-base dark:text-slate-300 leading-7" />
+      </div>
+    );
+  };
+
+  const renderSection2 = () => {
+    return (
+      <div className="listingSection__wrap !border-b-0 !pb-0">
+        <h2 className="text-2xl font-semibold">Product details</h2>
+        {/* <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div> */}
+        <div className="prose prose-sm sm:prose dark:prose-invert sm:max-w-4xl">
           <p>
             The patented eighteen-inch hardwood Arrowhead deck --- finely
             mortised in, makes this the strongest and most rigid canoe ever
@@ -301,13 +378,15 @@ const ProductDetailPage = () => {
             <li>Soft touch water based printed in the USA</li>
           </ul>
         </div>
+        {/* ---------- 6 ----------  */}
+        <Policy />
       </div>
     );
   };
 
   const renderReviews = () => {
     return (
-      <div className="">
+      <div id="reviews" className="scroll-mt-[150px]">
         {/* HEADING */}
         <h2 className="text-2xl font-semibold flex items-center">
           <StarIcon className="w-7 h-7 mb-0.5" />
@@ -359,89 +438,146 @@ const ProductDetailPage = () => {
   };
 
   return (
-    <div className={`nc-ProductDetailPage `}>
-      {/* MAIn */}
-      <main className="container mt-5 lg:mt-11">
-        <div className="lg:flex">
-          {/* CONTENT */}
-          <div className="w-full lg:w-[55%] ">
-            {/* HEADING */}
-            <div className="relative">
-              <div className="aspect-w-16 aspect-h-16 relative">
-                <Image
+    <div className={`ListingDetailPage nc-ProductDetailPage2`}>
+      <>
+        <header className="container mt-8 sm:mt-10">
+          <div className="relative ">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 lg:gap-6">
+              <div
+                className="md:h-full col-span-2 md:col-span-1 row-span-2 relative rounded-md sm:rounded-xl cursor-pointer"
+                onClick={handleOpenModalImageGallery}
+              >
+                <NcImage
+                  alt="firt"
+                  containerClassName="aspect-w-3 aspect-h-4 relative md:aspect-none md:absolute md:inset-0"
+                  className="object-cover rounded-md sm:rounded-xl"
+                  src={LIST_IMAGES_GALLERY_DEMO[0]}
                   fill
-                  sizes="(max-width: 640px) 100vw, 33vw"
-                  src={LIST_IMAGES_DEMO[0]}
-                  className="w-full rounded-2xl object-cover"
-                  alt="product detail 1"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  priority
                 />
+                <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity rounded-md sm:rounded-xl"></div>
               </div>
-              {renderStatus()}
-              {/* META FAVORITES */}
-              <LikeButton className="absolute right-3 top-3 " />
-            </div>
-            <div className="grid grid-cols-2 gap-3 mt-3 sm:gap-6 sm:mt-6 xl:gap-8 xl:mt-8">
-              {[LIST_IMAGES_DEMO[1], LIST_IMAGES_DEMO[2]].map((item, index) => {
-                return (
+
+              {/*  */}
+              <div
+                className="col-span-1 row-span-2 relative rounded-md sm:rounded-xl overflow-hidden z-0 cursor-pointer"
+                onClick={handleOpenModalImageGallery}
+              >
+                <NcImage
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  containerClassName="absolute inset-0"
+                  className="object-cover w-full h-full rounded-md sm:rounded-xl"
+                  src={LIST_IMAGES_GALLERY_DEMO[1]}
+                />
+                <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity"></div>
+              </div>
+
+              {/*  */}
+              {[LIST_IMAGES_GALLERY_DEMO[2], LIST_IMAGES_GALLERY_DEMO[3]].map(
+                (item, index) => (
                   <div
                     key={index}
-                    className="aspect-w-11 xl:aspect-w-10 2xl:aspect-w-11 aspect-h-16 relative"
+                    className={`relative rounded-md sm:rounded-xl overflow-hidden z-0 ${
+                      index >= 2 ? "block" : ""
+                    }`}
                   >
-                    <Image
-                      sizes="(max-width: 640px) 100vw, 33vw"
+                    <NcImage
+                      alt=""
                       fill
-                      src={item}
-                      className="w-full rounded-2xl object-cover"
-                      alt="product detail 1"
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      containerClassName="aspect-w-6 aspect-h-5 lg:aspect-h-4"
+                      className="object-cover w-full h-full rounded-md sm:rounded-xl "
+                      src={item || ""}
+                    />
+
+                    {/* OVERLAY */}
+                    <div
+                      className="absolute inset-0 bg-slate-900/20 opacity-0 hover:opacity-60 transition-opacity cursor-pointer"
+                      onClick={handleOpenModalImageGallery}
                     />
                   </div>
-                );
-              })}
+                )
+              )}
+            </div>
+            <div
+              className="absolute hidden md:flex md:items-center md:justify-center left-3 bottom-3 px-4 py-2 rounded-xl bg-white text-slate-500 cursor-pointer hover:bg-slate-200 z-10"
+              onClick={handleOpenModalImageGallery}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
+              </svg>
+              <span className="ml-2 text-neutral-800 text-sm font-medium">
+                Show all photos
+              </span>
             </div>
           </div>
+        </header>
+      </>
 
-          {/* SIDEBAR */}
-          <div className="w-full lg:w-[45%] pt-10 lg:pt-0 lg:pl-7 xl:pl-9 2xl:pl-10">
-            {renderSectionContent()}
-          </div>
+      {/* MAIn */}
+      <main className="container relative z-10 mt-9 sm:mt-11 flex ">
+        {/* CONTENT */}
+        <div className="w-full lg:w-3/5 xl:w-2/3 space-y-10 lg:pr-14 lg:space-y-14">
+          {renderSection1()}
+          {renderSection2()}
         </div>
 
-        {/* DETAIL AND REVIEW */}
-        <div className="mt-12 sm:mt-16 space-y-10 sm:space-y-16">
-          <div className="block xl:hidden">
-            <Policy />
-          </div>
-
-          {renderDetailSection()}
-
-          <hr className="border-slate-200 dark:border-slate-700" />
-
-          {renderReviews()}
-
-          <hr className="border-slate-200 dark:border-slate-700" />
-
-          {/* OTHER SECTION */}
-          <SectionSliderProductCard
-            heading="Customers also purchased"
-            subHeading=""
-            headingFontClassName="text-2xl font-semibold"
-            headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
-          />
-
-          {/* SECTION */}
-          <div className="pb-20 xl:pb-28 lg:pt-14">
-            <SectionPromo2 />
+        {/* SIDEBAR */}
+        <div className="flex-grow">
+          <div className="hidden lg:block sticky top-28">
+            {renderSectionSidebar()}
           </div>
         </div>
       </main>
+
+      {/* OTHER SECTION */}
+      <div className="container pb-24 lg:pb-28 pt-14 space-y-14">
+        {/* <hr className="border-slate-200 dark:border-slate-700" /> */}
+
+        {/* {renderReviews()} */}
+
+        <hr className="border-slate-200 dark:border-slate-700" />
+
+        <SectionSliderProductCard
+          heading="Customers also purchased"
+          subHeading=""
+          headingFontClassName="text-2xl font-semibold"
+          headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
+        />
+      </div>
 
       {/* MODAL VIEW ALL REVIEW */}
       <ModalViewAllReviews
         show={isOpenModalViewAllReviews}
         onCloseModalViewAllReviews={() => setIsOpenModalViewAllReviews(false)}
       />
+
+      <ListingImageGallery
+        isShowModal={modal === "PHOTO_TOUR_SCROLLABLE"}
+        onClose={handleCloseModalImageGallery}
+        images={LIST_IMAGES_GALLERY_DEMO.map((item, index) => {
+          return {
+            id: index,
+            url: item,
+          };
+        })}
+      />
     </div>
   );
 };
 
-export default ProductDetailPage;
+export default ProductDetailPage2;

@@ -61,11 +61,7 @@ const ModalQuickView: FC<ModalQuickViewProps> = ({
                 </span>
 
                 <div className="flex-1 overflow-y-auto rounded-xl hiddenScrollbar">
-                  {pathname.includes("/home-2") ? (
-                    <ProductQuickView2 />
-                  ) : (
-                    <ProductQuickView />
-                  )}
+                  <ProductQuickView />
                 </div>
               </div>
             </div>
