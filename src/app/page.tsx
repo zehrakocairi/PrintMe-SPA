@@ -31,7 +31,11 @@ function PageHome() {
       </div>
 
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
-        {/* <SectionSliderProductCard
+        <SectionSliderProductCard
+          heading="Customers also purchased"
+          subHeading=""
+          headingFontClassName="text-2xl font-semibold"
+          headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
           data={[
             PRODUCTS[4],
             SPORT_PRODUCTS[5],
@@ -39,8 +43,7 @@ function PageHome() {
             SPORT_PRODUCTS[1],
             PRODUCTS[6],
           ]}
-        /> */}
-
+        />
         <SectionGridFeatureItems />
 
         <div className="py-24 lg:py-32 border-t border-b border-slate-200 dark:border-slate-700">
