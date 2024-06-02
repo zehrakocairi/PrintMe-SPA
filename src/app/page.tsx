@@ -1,25 +1,37 @@
 "use client"
 
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import SectionHowItWork from "@/components/SectionHowItWork/SectionHowItWork";
 import BackgroundSection from "@/components/BackgroundSection/BackgroundSection";
-import SectionPromo1 from "@/components/SectionPromo1";
 import SectionHero2 from "@/components/SectionHero/SectionHero2";
-import SectionSliderLargeProduct from "@/components/SectionSliderLargeProduct";
 import SectionSliderProductCard from "@/components/SectionSliderProductCard";
 import DiscoverMoreSlider from "@/components/DiscoverMoreSlider";
 import SectionGridMoreExplore from "@/components/SectionGridMoreExplore/SectionGridMoreExplore";
-import SectionPromo2 from "@/components/SectionPromo2";
-import SectionSliderCategories from "@/components/SectionSliderCategories/SectionSliderCategories";
-import SectionPromo3 from "@/components/SectionPromo3";
-import SectionClientSay from "@/components/SectionClientSay/SectionClientSay";
 import Heading from "@/components/Heading/Heading";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import { PRODUCTS, SPORT_PRODUCTS } from "@/data/data";
 import SectionGridFeatureItems from "@/components/SectionGridFeatureItems";
 import SectionMagazine5 from "@/app/blog/SectionMagazine5";
+import { getFeaturedItems } from "./services/catalogService";
+import ProductCard from "@/components/ProductCard";
 
-function PageHome() {
+const PageHome: FC<any> = ({ }) => {
+
+  const [featuredItems, setFeaturedItems] = useState([]);
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const { data } = await getFeaturedItems();
+        setFeaturedItems(data);
+      } catch (err) {
+        alert(err)
+      }
+    };
+
+    fetchItems();
+    return () => {
+    };
+  }, []);
 
   return (
     <div className="nc-PageHome relative overflow-hidden">
@@ -31,19 +43,16 @@ function PageHome() {
       </div>
 
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
-        <SectionSliderProductCard
-          heading="Customers also purchased"
-          subHeading=""
-          headingFontClassName="text-2xl font-semibold"
-          headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
-          data={[
-            PRODUCTS[4],
-            SPORT_PRODUCTS[5],
-            PRODUCTS[7],
-            SPORT_PRODUCTS[1],
-            PRODUCTS[6],
-          ]}
-        />
+        {
+          featuredItems.length > 0 ? <SectionSliderProductCard
+            heading="Customers also purchased"
+            subHeading=""
+            headingFontClassName="text-2xl font-semibold"
+            headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
+            data={featuredItems}
+          /> : <></>
+        }
+
         <SectionGridFeatureItems />
 
         <div className="py-24 lg:py-32 border-t border-b border-slate-200 dark:border-slate-700">
